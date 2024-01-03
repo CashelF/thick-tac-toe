@@ -1,0 +1,56 @@
+/* SubBoard.css */
+.subBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+    margin: 15%;
+    position: relative;
+    background-color: white;
+}
+
+.subBoard .lineHorizontal {
+    position: absolute;
+    top: 33%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #000;
+}
+
+.subBoard .lineHorizontal:nth-child(2) {
+    top: 66%;
+}
+
+.subBoard .lineVertical {
+    position: absolute;
+    left: 33%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: #000;
+}
+
+.subBoard .lineVertical:nth-child(4) {
+    left: 66%;
+}
+
+.winnerOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 25vw;
+    font-weight: bold;
+    color: white;
+    overflow: hidden;
+}
+/* TODO: separate the winner overlay with the text so the letter can be better centered */
