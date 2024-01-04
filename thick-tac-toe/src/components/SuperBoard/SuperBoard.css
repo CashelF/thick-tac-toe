@@ -1,0 +1,37 @@
+.superBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 90%;
+    height: 90%;
+    border-radius: 5px;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+.superBoard .line-Horizontal {
+    position: absolute;
+    top: 42%;
+    left: 25%;
+    right: 25%;
+    height: 5px;
+    background-color: #363636;
+}
+
+.superBoard .line-Horizontal:nth-child(2) {
+    top: 69%;
+}
+
+.superBoard .line-Vertical {
+    position: absolute;
+    left: 44%;
+    top: 15%;
+    bottom: 5%;
+    width: 5px;
+    background-color: #363636;
+}
+
+.superBoard .line-Vertical:nth-child(4) {
+    left: 59%;
+}

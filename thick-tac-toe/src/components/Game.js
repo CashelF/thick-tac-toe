@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SuperBoard from './SuperBoard';
+import SuperBoard from './SuperBoard/SuperBoard';
 
 function calculateWinner(board) {
     const winningCombinations = [
@@ -35,7 +35,7 @@ const Game = () => {
 
         // Update the square with the current player's symbol
         newSubBoard[squareIndex] = currentPlayer;
-        setRequiredSubBoard(squareIndex);
+        setRequiredSubBoard(calculateWinner([...superBoardState[squareIndex]]) ? null : squareIndex);
 
         // Create a new copy of the superBoardState with the updated subBoard
         const newSuperBoardState = superBoardState.map((subBoard, index) => 
