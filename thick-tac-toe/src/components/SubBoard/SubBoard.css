@@ -48,9 +48,10 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
-    font-size: 25vw;
+    font-size: 13vw;
     font-weight: bold;
     color: white;
     overflow: hidden;
+    border-radius: 5px;
 }
 /* TODO: separate the winner overlay with the text so the letter can be better centered */

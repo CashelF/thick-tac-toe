@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SuperBoard from './SuperBoard/SuperBoard';
 
 function calculateWinner(board) {
@@ -19,6 +19,29 @@ function calculateWinner(board) {
 }
 
 const Game = () => {
+    // Dynamically set the size of the game container based on the viewport size
+    const [gameContainerStyle, setGameContainerStyle] = useState(styles.gameContainer);
+
+    useEffect(() => {
+        const updateGameContainerSize = () => {
+            const vh = window.innerHeight * 0.01;
+            const vw = window.innerWidth * 0.01;
+            const smallerDimension = Math.min(vh, vw);
+
+            setGameContainerStyle({
+                ...styles.gameContainer,
+                width: `${80 * smallerDimension}px`,
+                height: `${80 * smallerDimension}px`
+            });
+        };
+
+        window.addEventListener('resize', updateGameContainerSize);
+        updateGameContainerSize(); // Call on initial load
+
+        // Clean up the event listener
+        return () => window.removeEventListener('resize', updateGameContainerSize);
+    }, []);
+
     const [superBoardState, setSuperBoardState] = useState(Array(9).fill(null).map(() => Array(9).fill(null)));
     const [currentPlayer, setCurrentPlayer] = useState('X');
     const [requiredSubBoard, setRequiredSubBoard] = useState(null);
@@ -35,7 +58,6 @@ const Game = () => {
 
         // Update the square with the current player's symbol
         newSubBoard[squareIndex] = currentPlayer;
-        setRequiredSubBoard(calculateWinner([...superBoardState[squareIndex]]) ? null : squareIndex);
 
         // Create a new copy of the superBoardState with the updated subBoard
         const newSuperBoardState = superBoardState.map((subBoard, index) => 
@@ -43,13 +65,16 @@ const Game = () => {
         );
 
         setSuperBoardState(newSuperBoardState);
+        
+        // Set new required subBoard
+        setRequiredSubBoard(calculateWinner([...newSuperBoardState[squareIndex]]) ? null : squareIndex);
 
         // Switch players
         setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
     };
 
     return (
-        <div style={styles.gameContainer}>
+        <div style={gameContainerStyle}>
             <SuperBoard superBoardState={superBoardState} onSubBoardClick={handleSubBoardClick} />
         </div>
     );
@@ -72,5 +97,4 @@ const styles = {
         overflow: 'auto',
     }
 };
-
 
