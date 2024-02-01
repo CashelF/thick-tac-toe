@@ -49,7 +49,7 @@ const Game = () => {
     const handleSubBoardClick = (subBoardIndex, squareIndex) => {
         const newSubBoard = [...superBoardState[subBoardIndex]];
 
-        if(requiredSubBoard && requiredSubBoard !== subBoardIndex) {
+        if(requiredSubBoard != null && requiredSubBoard !== subBoardIndex) {
             return;
         }
         if (newSubBoard[squareIndex]) {
@@ -67,6 +67,7 @@ const Game = () => {
         setSuperBoardState(newSuperBoardState);
         
         // Set new required subBoard
+        console.log(calculateWinner([...newSuperBoardState[squareIndex]]) ? null : squareIndex);
         setRequiredSubBoard(calculateWinner([...newSuperBoardState[squareIndex]]) ? null : squareIndex);
 
         // Switch players
