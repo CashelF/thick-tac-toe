@@ -10,6 +10,12 @@
     margin: 15%;
     position: relative;
     background-color: white;
+    border: 3px solid transparent; /* Reserve space for border */
+}
+
+.subBoard.active {
+    border: 3px solid rgb(100, 154, 124);
+    box-shadow: 0 0 10px rgb(96, 140, 109);
 }
 
 .subBoard .lineHorizontal {

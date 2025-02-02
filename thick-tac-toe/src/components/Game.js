@@ -38,18 +38,49 @@ const Game = () => {
         window.addEventListener('resize', updateGameContainerSize);
         updateGameContainerSize(); // Call on initial load
 
-        // Clean up the event listener
         return () => window.removeEventListener('resize', updateGameContainerSize);
     }, []);
 
-    const [superBoardState, setSuperBoardState] = useState(Array(9).fill(null).map(() => Array(9).fill(null)));
-    const [currentPlayer, setCurrentPlayer] = useState('X');
-    const [requiredSubBoard, setRequiredSubBoard] = useState(null);
+    // Initialize state – try to load from localStorage first.
+    const [superBoardState, setSuperBoardState] = useState(() => {
+        const saved = localStorage.getItem('thickTacToeState');
+        if (saved) {
+            const { superBoardState } = JSON.parse(saved);
+            return superBoardState;
+        }
+        return Array(9).fill(null).map(() => Array(9).fill(null));
+    });
+    const [currentPlayer, setCurrentPlayer] = useState(() => {
+        const saved = localStorage.getItem('thickTacToeState');
+        if (saved) {
+            const { currentPlayer } = JSON.parse(saved);
+            return currentPlayer;
+        }
+        return 'X';
+    });
+    const [requiredSubBoard, setRequiredSubBoard] = useState(() => {
+        const saved = localStorage.getItem('thickTacToeState');
+        if (saved) {
+            const { requiredSubBoard } = JSON.parse(saved);
+            return requiredSubBoard;
+        }
+        return null;
+    });
+
+    // Save game state whenever it changes.
+    useEffect(() => {
+        const gameState = {
+            superBoardState,
+            currentPlayer,
+            requiredSubBoard,
+        };
+        localStorage.setItem('thickTacToeState', JSON.stringify(gameState));
+    }, [superBoardState, currentPlayer, requiredSubBoard]);
 
     const handleSubBoardClick = (subBoardIndex, squareIndex) => {
         const newSubBoard = [...superBoardState[subBoardIndex]];
 
-        if(requiredSubBoard != null && requiredSubBoard !== subBoardIndex) {
+        if (requiredSubBoard != null && requiredSubBoard !== subBoardIndex) {
             return;
         }
         if (newSubBoard[squareIndex]) {
@@ -61,14 +92,15 @@ const Game = () => {
 
         // Create a new copy of the superBoardState with the updated subBoard
         const newSuperBoardState = superBoardState.map((subBoard, index) => 
-        index === subBoardIndex ? newSubBoard : subBoard
+            index === subBoardIndex ? newSubBoard : subBoard
         );
 
         setSuperBoardState(newSuperBoardState);
         
-        // Set new required subBoard
-        console.log(calculateWinner([...newSuperBoardState[squareIndex]]) ? null : squareIndex);
-        setRequiredSubBoard(calculateWinner([...newSuperBoardState[squareIndex]]) ? null : squareIndex);
+        // Set new required subBoard based on the square index that was just played.
+        // If that subBoard is already won, then allow any subBoard (null).
+        const nextRequired = calculateWinner(newSuperBoardState[squareIndex]) ? null : squareIndex;
+        setRequiredSubBoard(nextRequired);
 
         // Switch players
         setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
@@ -76,13 +108,16 @@ const Game = () => {
 
     return (
         <div style={gameContainerStyle}>
-            <SuperBoard superBoardState={superBoardState} onSubBoardClick={handleSubBoardClick} />
+            <SuperBoard 
+                superBoardState={superBoardState} 
+                onSubBoardClick={handleSubBoardClick} 
+                requiredSubBoard={requiredSubBoard}  // Pass down the active subboard
+            />
         </div>
     );
 }
 
 export default Game;
-
 
 const styles = {
     gameContainer: {
@@ -98,4 +133,3 @@ const styles = {
         overflow: 'auto',
     }
 };
-
