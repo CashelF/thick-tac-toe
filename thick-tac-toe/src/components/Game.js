@@ -77,7 +77,13 @@ const Game = () => {
         localStorage.setItem('thickTacToeState', JSON.stringify(gameState));
     }, [superBoardState, currentPlayer, requiredSubBoard]);
 
+    const overallWinner = calculateWinner(
+        superBoardState.map(subBoard => calculateWinner(subBoard))
+    );
+
     const handleSubBoardClick = (subBoardIndex, squareIndex) => {
+        if (overallWinner) return;
+        
         const newSubBoard = [...superBoardState[subBoardIndex]];
 
         if (requiredSubBoard != null && requiredSubBoard !== subBoardIndex) {
@@ -106,14 +112,31 @@ const Game = () => {
         setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
     };
 
+    const resetGame = () => {
+        setSuperBoardState(Array(9).fill(null).map(() => Array(9).fill(null)));
+        setCurrentPlayer('X');
+        setRequiredSubBoard(null);
+        localStorage.removeItem('thickTacToeState');
+    };
+
     return (
-        <div style={gameContainerStyle}>
-            <SuperBoard 
-                superBoardState={superBoardState} 
-                onSubBoardClick={handleSubBoardClick} 
-                requiredSubBoard={requiredSubBoard}  // Pass down the active subboard
+        <>
+          <div style={gameContainerStyle}>
+            <SuperBoard
+              superBoardState={superBoardState}
+              onSubBoardClick={handleSubBoardClick}
+              requiredSubBoard={requiredSubBoard}
             />
-        </div>
+          </div>
+          <div style={styles.bottomContainer}>
+            <button style={styles.resetButton} onClick={resetGame}>
+              Reset Game
+            </button>
+            <div style={styles.statusText}>
+              {overallWinner ? `Overall Winner: ${overallWinner}` : `Current Player: ${currentPlayer}`}
+            </div>
+          </div>
+        </>
     );
 }
 
@@ -131,5 +154,28 @@ const styles = {
         padding: '20px',
         boxSizing: 'border-box',
         overflow: 'auto',
-    }
+    },
+    bottomContainer: {
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#f4f4f4',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    resetButton: {
+        padding: '10px 20px',
+        fontSize: '16px',
+        cursor: 'pointer',
+        backgroundColor: '#fff',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+    },
+    statusText: {
+        fontSize: '20px',
+        fontWeight: 'bold',
+    },
 };

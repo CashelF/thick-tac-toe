@@ -24,9 +24,7 @@ const SubBoard = ({ subBoardIndex, subBoardState, onClick, isActive = false }) =
 
     useEffect(() => {
         const subBoardWinner = calculateWinner(subBoardState);
-        if (subBoardWinner) {
-            setWinner(subBoardWinner);
-        }
+        setWinner(subBoardWinner);
     }, [subBoardState]);
 
     return (
